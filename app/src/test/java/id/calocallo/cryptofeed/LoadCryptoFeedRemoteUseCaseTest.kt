@@ -1,20 +1,10 @@
 package id.calocallo.cryptofeed
 
+import id.calocallo.cryptofeed.api.HttpClient
+import id.calocallo.cryptofeed.api.LoadCryptoFeedRemoteUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-
-class LoadCryptoFeedRemoteUseCase constructor(
-    private val client: HttpClient,
-) {
-    fun load() {
-        client.get()
-    }
-}
-
-interface HttpClient {
-    fun get()
-}
 
 class LoadCryptoFeedRemoteUseCaseTest {
     @Test
