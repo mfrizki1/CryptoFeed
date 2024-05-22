@@ -1,4 +1,4 @@
-package id.calocallo.cryptofeed
+package id.calocallo.cryptofeed.domain
 
 import kotlinx.coroutines.flow.Flow
 

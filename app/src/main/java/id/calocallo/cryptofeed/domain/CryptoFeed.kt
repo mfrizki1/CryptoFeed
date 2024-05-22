@@ -1,4 +1,4 @@
-package id.calocallo.cryptofeed
+package id.calocallo.cryptofeed.domain
 
 data class CryptoFeed(
     val coinInfo: CoinInfo,
