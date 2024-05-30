@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import id.calocallo.cryptofeed.api.Connectivity
 import id.calocallo.cryptofeed.api.ConnectivityException
 import id.calocallo.cryptofeed.api.HttpClient
+import id.calocallo.cryptofeed.api.InvalidData
+import id.calocallo.cryptofeed.api.InvalidDataException
 import id.calocallo.cryptofeed.api.LoadCryptoFeedRemoteUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
@@ -88,6 +90,26 @@ class LoadCryptoFeedRemoteUseCaseTest {
             verify(exactly = 1) {
                 client.get()
             }
+
+            confirmVerified(client)
+        }
+
+    @Test
+    fun testLoadDeliversInvalidDataError() =
+        runBlocking {
+            every {
+                client.get()
+            } returns flowOf(InvalidDataException())
+
+            sut.load().test {
+                assertEquals(InvalidData::class.java, awaitItem()::class.java)
+                awaitComplete()
+            }
+
+            verify(exactly = 1) {
+                client.get()
+            }
+
             confirmVerified(client)
         }
 }
