@@ -1,6 +1,8 @@
 package id.calocallo.cryptofeed
 
 import app.cash.turbine.test
+import id.calocallo.cryptofeed.api.Connectivity
+import id.calocallo.cryptofeed.api.ConnectivityException
 import id.calocallo.cryptofeed.api.HttpClient
 import id.calocallo.cryptofeed.api.LoadCryptoFeedRemoteUseCase
 import io.mockk.MockKAnnotations
@@ -10,6 +12,7 @@ import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -67,6 +70,24 @@ class LoadCryptoFeedRemoteUseCaseTest {
                 client.get()
             }
 
+            confirmVerified(client)
+        }
+
+    @Test
+    fun testLoadDeliversConnectivityErrorOnClientError() =
+        runBlocking {
+            every {
+                client.get()
+            } returns flowOf(ConnectivityException())
+
+            sut.load().test {
+                assertEquals(Connectivity::class.java, awaitItem()::class.java)
+                awaitComplete()
+            }
+
+            verify(exactly = 1) {
+                client.get()
+            }
             confirmVerified(client)
         }
 }
