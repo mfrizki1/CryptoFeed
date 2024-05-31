@@ -78,38 +78,50 @@ class LoadCryptoFeedRemoteUseCaseTest {
     @Test
     fun testLoadDeliversConnectivityErrorOnClientError() =
         runBlocking {
-            every {
-                client.get()
-            } returns flowOf(ConnectivityException())
-
-            sut.load().test {
-                assertEquals(Connectivity::class.java, awaitItem()::class.java)
-                awaitComplete()
-            }
-
-            verify(exactly = 1) {
-                client.get()
-            }
-
-            confirmVerified(client)
+            expect(
+                client = client,
+                sut = sut,
+                toCompleteWith = ConnectivityException(),
+                expectedResult = Connectivity(),
+                exactly = 1,
+                confirmVerified = client,
+            )
         }
 
     @Test
     fun testLoadDeliversInvalidDataError() =
         runBlocking {
-            every {
-                client.get()
-            } returns flowOf(InvalidDataException())
-
-            sut.load().test {
-                assertEquals(InvalidData::class.java, awaitItem()::class.java)
-                awaitComplete()
-            }
-
-            verify(exactly = 1) {
-                client.get()
-            }
-
-            confirmVerified(client)
+            expect(
+                client = client,
+                sut = sut,
+                toCompleteWith = InvalidDataException(),
+                expectedResult = InvalidData(),
+                exactly = 1,
+                confirmVerified = client,
+            )
         }
+
+    private fun expect(
+        client: HttpClient,
+        sut: LoadCryptoFeedRemoteUseCase,
+        toCompleteWith: Exception,
+        expectedResult: Any,
+        exactly: Int = -1,
+        confirmVerified: HttpClient,
+    ) = runBlocking {
+        every {
+            client.get()
+        } returns flowOf(toCompleteWith)
+
+        sut.load().test {
+            assertEquals(expectedResult::class.java, awaitItem()::class.java)
+            awaitComplete()
+        }
+
+        verify(exactly = exactly) {
+            client.get()
+        }
+
+        confirmVerified(confirmVerified)
+    }
 }
