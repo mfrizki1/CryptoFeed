@@ -11,6 +11,8 @@ class ConnectivityException : Exception()
 
 class InvalidDataException : Exception()
 
+class BadRequestException : Exception()
+
 class LoadCryptoFeedRemoteUseCase constructor(
     private val client: HttpClient,
 ) {
@@ -25,6 +27,10 @@ class LoadCryptoFeedRemoteUseCase constructor(
                     is InvalidDataException -> {
                         emit(InvalidData())
                     }
+
+                    is BadRequestException -> {
+                        emit(BadRequest())
+                    }
                 }
             }
         }
@@ -33,3 +39,5 @@ class LoadCryptoFeedRemoteUseCase constructor(
 class Connectivity : Exception()
 
 class InvalidData : Exception()
+
+class BadRequest : Exception()

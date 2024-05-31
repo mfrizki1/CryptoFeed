@@ -1,6 +1,8 @@
 package id.calocallo.cryptofeed
 
 import app.cash.turbine.test
+import id.calocallo.cryptofeed.api.BadRequest
+import id.calocallo.cryptofeed.api.BadRequestException
 import id.calocallo.cryptofeed.api.Connectivity
 import id.calocallo.cryptofeed.api.ConnectivityException
 import id.calocallo.cryptofeed.api.HttpClient
@@ -96,6 +98,19 @@ class LoadCryptoFeedRemoteUseCaseTest {
                 sut = sut,
                 receivedHttpClientResult = InvalidDataException(),
                 expectedResult = InvalidData(),
+                exactly = 1,
+                confirmVerified = client,
+            )
+        }
+
+    @Test
+    fun testLoadDeliversBadRequestError() =
+        runBlocking {
+            expect(
+                client = client,
+                sut = sut,
+                receivedHttpClientResult = BadRequestException(),
+                expectedResult = BadRequest(),
                 exactly = 1,
                 confirmVerified = client,
             )
