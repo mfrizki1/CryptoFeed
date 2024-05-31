@@ -6,6 +6,8 @@ import id.calocallo.cryptofeed.api.BadRequestException
 import id.calocallo.cryptofeed.api.Connectivity
 import id.calocallo.cryptofeed.api.ConnectivityException
 import id.calocallo.cryptofeed.api.HttpClient
+import id.calocallo.cryptofeed.api.InternalServerError
+import id.calocallo.cryptofeed.api.InternalServerErrorException
 import id.calocallo.cryptofeed.api.InvalidData
 import id.calocallo.cryptofeed.api.InvalidDataException
 import id.calocallo.cryptofeed.api.LoadCryptoFeedRemoteUseCase
@@ -111,6 +113,19 @@ class LoadCryptoFeedRemoteUseCaseTest {
                 sut = sut,
                 receivedHttpClientResult = BadRequestException(),
                 expectedResult = BadRequest(),
+                exactly = 1,
+                confirmVerified = client,
+            )
+        }
+
+    @Test
+    fun testLoadDeliversInternalServerError() =
+        runBlocking {
+            expect(
+                client = client,
+                sut = sut,
+                receivedHttpClientResult = InternalServerErrorException(),
+                expectedResult = InternalServerError(),
                 exactly = 1,
                 confirmVerified = client,
             )
